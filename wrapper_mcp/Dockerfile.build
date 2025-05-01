@@ -1,0 +1,18 @@
+FROM python:3.11-slim
+
+# Instalar binutils necessário para o PyInstaller
+RUN apt-get update && apt-get install -y binutils && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+# Instalar dependências
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt pyinstaller
+
+# Copiar o código fonte
+COPY mcp_wrapper.py .
+
+# Compilar o wrapper
+RUN pyinstaller --onefile mcp_wrapper.py
+
+# O binário compilado estará em /app/dist/mcp_wrapper

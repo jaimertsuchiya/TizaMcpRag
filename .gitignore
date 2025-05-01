@@ -1,0 +1,58 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Environment
+.env
+.venv
+venv/
+ENV/
+
+# Dados
+api_rag/chroma_db/
+api_rag/documentos/
+ollama_data/
+
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# n8n
+.n8n/
+n8n/credentials.json
+n8n/database.sqlite
+n8n/crash.journal
+n8n/config
+n8n/binaryData/
+n8n/ssh/
+n8n/git/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Logs
+*.log

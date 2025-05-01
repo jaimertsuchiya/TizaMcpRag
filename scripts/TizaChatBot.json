@@ -1,0 +1,380 @@
+{
+  "name": "TizaChatBot",
+  "nodes": [
+    {
+      "parameters": {
+        "public": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "3691804e-9ea2-4995-8581-71b898d6e82e",
+      "name": "When chat message received",
+      "webhookId": "9aaf32c0-32b5-4a57-96fe-277f38b89ada"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={\n  \"mensagem\": \"{{ $('When chat message received').item.json.chatInput }}\",\n  \"sessionId\": \"{{ $json.sessionId }}\",\n  \"contexto\": {\n\t\"codigoAmbiente\": 33,\n\t\"codigoUsuario\": 326946,\n\t\"canal\": \"chat\"\n  }\n}\n ",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        220,
+        0
+      ],
+      "id": "371640b5-a05b-4b7d-a2e8-2e470745830e",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.mensagem }}",
+        "options": {
+          "systemMessage": "\nVocê é um assistente inteligente que deve sempre responder utilizando as ferramentas (Tools) disponíveis, \nconforme definidas na lista de ferramentas fornecida.\nAo atribuir os parametros da ferramenta, respeite os nomes dos parametros informados na lista de ferramentas."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.8,
+      "position": [
+        440,
+        0
+      ],
+      "id": "db7927bf-796a-4de0-b470-9d0c5286d22c",
+      "name": "AI Agent",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4o-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        420,
+        400
+      ],
+      "id": "fee25245-82b7-497c-ab3c-c4602752d4e8",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "CPjjuO1Lfa6M8Nuc",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-mcp.mcpClientTool",
+      "typeVersion": 1,
+      "position": [
+        880,
+        120
+      ],
+      "id": "c8d5189b-3f26-4fab-82c3-9747c7ada10a",
+      "name": "MCP Lista Tiza",
+      "credentials": {
+        "mcpClientApi": {
+          "id": "jc2MmYODrWecRhM2",
+          "name": "MCP Client (STDIO) account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Consulta os benefícios ativos de um cliente no sistema de benefícios, retornando todos os dados disponíveis para o ambiente e usuário informados.",
+        "operation": "executeTool",
+        "toolName": "ConsultarBeneficiosAtivas",
+        "toolParameters": "={\n \"codigoAmbiente\": {{$('Edit Fields').item.json.contexto.codigoAmbiente }},\n\"codigoUsuario\": {{ $('Edit Fields').item.json.contexto.codigoUsuario }}\n}\n"
+      },
+      "type": "n8n-nodes-mcp.mcpClientTool",
+      "typeVersion": 1,
+      "position": [
+        1060,
+        120
+      ],
+      "id": "d92beaa0-de17-41e6-95ab-5f82e706a198",
+      "name": "ConsultarBeneficiosAtivas",
+      "credentials": {
+        "mcpClientApi": {
+          "id": "jc2MmYODrWecRhM2",
+          "name": "MCP Client (STDIO) account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Obtém a lista de beneficiários de um benefício através do código, o usuário deverá informar o código do benefício para executar esta consulta.",
+        "operation": "executeTool",
+        "toolName": "BeneficiariosBeneficio",
+        "toolParameters": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Tool_Parameters', ``, 'json') }}"
+      },
+      "type": "n8n-nodes-mcp.mcpClientTool",
+      "typeVersion": 1,
+      "position": [
+        1240,
+        120
+      ],
+      "id": "508ed053-a768-4ffb-a8d4-2af1465d6177",
+      "name": "BeneficiariosBeneficio",
+      "credentials": {
+        "mcpClientApi": {
+          "id": "jc2MmYODrWecRhM2",
+          "name": "MCP Client (STDIO) account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "contextWindowLength": 10
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        560,
+        400
+      ],
+      "id": "79e9265e-8749-4cfd-8adc-13a02dc2225f",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Obtém os dependentes cadastrados do usuario.",
+        "operation": "executeTool",
+        "toolName": "MeusDependentes",
+        "toolParameters": "={\n\"codigoUsuario\": {{ $('Edit Fields').item.json.contexto.codigoUsuario }}\n}\n"
+      },
+      "type": "n8n-nodes-mcp.mcpClientTool",
+      "typeVersion": 1,
+      "position": [
+        900,
+        360
+      ],
+      "id": "49204f7e-9b32-4c14-996a-cf88488278c1",
+      "name": "MeusDependentes",
+      "credentials": {
+        "mcpClientApi": {
+          "id": "jc2MmYODrWecRhM2",
+          "name": "MCP Client (STDIO) account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Obtém o saldo disponivel do usuario para reembolso no periodo",
+        "operation": "executeTool",
+        "toolName": "SaldoDisponivelReembolso",
+        "toolParameters": "={\n\"codigoUsuario\": {{ $('Edit Fields').item.json.contexto.codigoUsuario }}\n}"
+      },
+      "type": "n8n-nodes-mcp.mcpClientTool",
+      "typeVersion": 1,
+      "position": [
+        1060,
+        360
+      ],
+      "id": "0064a8da-c9f4-4f31-b8bf-9d69944c66df",
+      "name": "SaldoDisponivelReembolso",
+      "credentials": {
+        "mcpClientApi": {
+          "id": "jc2MmYODrWecRhM2",
+          "name": "MCP Client (STDIO) account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Obtém as solicitacoes pendentes do usuario.",
+        "operation": "executeTool",
+        "toolName": "ObterSolicitacoesPendentes",
+        "toolParameters": "={\n\"codigoUsuario\": {{ $('Edit Fields').item.json.contexto.codigoUsuario }}\n}"
+      },
+      "type": "n8n-nodes-mcp.mcpClientTool",
+      "typeVersion": 1,
+      "position": [
+        1240,
+        360
+      ],
+      "id": "982d8e17-4f33-41fc-bc05-5f9a297803f8",
+      "name": "ObterSolicitacoesPendentes",
+      "credentials": {
+        "mcpClientApi": {
+          "id": "jc2MmYODrWecRhM2",
+          "name": "MCP Client (STDIO) account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Obtém informações sobre o programa de benefícios",
+        "operation": "executeTool",
+        "toolName": "ProgramaBeneficios",
+        "toolParameters": "={\n \"pergunta\": \"{{$('Edit Fields').item.json.mensagem }}\",\n\"codigoUsuario\": {{ $('Edit Fields').item.json.contexto.codigoUsuario }}\n}\n"
+      },
+      "type": "n8n-nodes-mcp.mcpClientTool",
+      "typeVersion": 1,
+      "position": [
+        900,
+        580
+      ],
+      "id": "77f39f12-257d-41c4-95b9-f401f27f97e1",
+      "name": "ProgramaBeneficios",
+      "credentials": {
+        "mcpClientApi": {
+          "id": "jc2MmYODrWecRhM2",
+          "name": "MCP Client (STDIO) account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MCP Lista Tiza": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ConsultarBeneficiosAtivas": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "BeneficiariosBeneficio": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MeusDependentes": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SaldoDisponivelReembolso": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ObterSolicitacoesPendentes": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ProgramaBeneficios": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "a568208f-0936-4e68-b9cc-484c3baae92f",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "6b48a7c800e61ed476ad4e1629bc285b572090df470c04df307d798381bf71c3"
+  },
+  "id": "5NlIqEPeMSJ6y3OQ",
+  "tags": []
+}
