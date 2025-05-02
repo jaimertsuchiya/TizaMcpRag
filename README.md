@@ -89,23 +89,23 @@ O sistema requer os seguintes modelos do Ollama:
 - `gemma3:latest`: para geração de respostas da API RAG
 - `mistral`: para o agente de chat no n8n (requer suporte a tools)
 
-Para baixar os modelos manualmente, execute os comandos abaixo no container ollama:
+Para baixar os modelos manualmente, execute os comandos abaixo:
 
 ```bash
 # Baixar modelo de embeddings
-ollama pull nomic-embed-text
+docker-compose exec ollama ollama pull nomic-embed-text
 
 # Baixar modelo para respostas RAG
-ollama pull gemma3:latest
+docker-compose exec ollama ollama pull gemma3:latest
 
 # Baixar modelo para agente n8n
-ollama pull mistral
+docker-compose exec ollama ollama pull mistral
 ```
 
 Aguarde o download de cada modelo ser concluído antes de prosseguir. Você pode verificar os modelos instalados com:
 
 ```bash
-ollama list
+docker-compose exec ollama ollama list
 ```
 
 ### Configuração do Agente n8n
