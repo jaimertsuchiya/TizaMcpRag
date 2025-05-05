@@ -76,11 +76,20 @@ Após iniciar os containers, aguarde alguns minutos para que os modelos do Ollam
 
 ## Atualizando documentos RAG
 
-Adicionar documentos em `api_rag/documentos/` e executar:
+1. Crie a pasta `documentos` dentro de `api_rag` (caso ainda não exista):
+
+```bash
+mkdir -p api_rag/documentos
+```
+
+2. Copie os arquivos que deseja indexar para a pasta `api_rag/documentos`.
+
+3. Execute o comando abaixo para processar os documentos:
 
 ```bash
 docker-compose exec tizamcprag-api-rag python preprocess_docs.py
 ```
+
 
 ## Modelos do Ollama
 
