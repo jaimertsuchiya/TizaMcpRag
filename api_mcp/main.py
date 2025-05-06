@@ -1,8 +1,18 @@
+# Carregar variáveis de ambiente primeiro
+import sys
+import os
+from pathlib import Path
+
+# Adiciona o diretório atual ao path para importar load_env
+current_dir = Path(__file__).parent
+sys.path.append(str(current_dir))
+
+# Importa e executa o carregamento das variáveis de ambiente
+import load_env
 
 from fastapi import FastAPI, HTTPException
 from models import ExecuteRequest, AuthRequest
 import importlib
-import os
 
 app = FastAPI()
 

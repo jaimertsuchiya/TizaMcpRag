@@ -6,7 +6,20 @@ import requests
 import os
 import logging
 
-MCP_SERVER_URL = os.getenv("MCP_SERVER_URL", "http://172.21.0.2:8000")
+# Configure logging
+log_dir = '/tmp/mcp-client-logs'
+os.makedirs(log_dir, exist_ok=True)
+
+logging.basicConfig(
+    filename=f'{log_dir}/wrapper.log',
+    level=logging.DEBUG,
+    format='%(asctime)s - %(levelname)s - %(message)s'
+)
+
+# Force the correct service name and ensure we're not using a hardcoded IP
+MCP_SERVER_URL = "http://tizamcprag-api-mcp:8000"
+logging.debug(f"MCP_SERVER_URL configurado como: {MCP_SERVER_URL}")
+logging.debug(f"Variáveis de ambiente MCP: {dict([(k,v) for k,v in os.environ.items() if 'MCP' in k])}")
 
 # Headers para todas as requisições
 HEADERS = {"Content-Type": "application/json"}

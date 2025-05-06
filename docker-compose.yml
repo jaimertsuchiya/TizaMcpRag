@@ -44,6 +44,8 @@ services:
       - "8002:8000"
     env_file:
       - .env
+    volumes:
+      - ./.env:/app/.env:ro
     environment:
       SQLSERVER_HOST: ${SQLSERVER_HOST}
       SQLSERVER_PORT: ${SQLSERVER_PORT}

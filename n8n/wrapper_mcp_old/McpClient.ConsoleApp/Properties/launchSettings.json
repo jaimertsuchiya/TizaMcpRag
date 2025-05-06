@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "McpClient.ConsoleApp": {
-      "commandName": "Project",
-      "commandLineArgs": "http://localhost:2000/Bematize.Portal.Integracao/mcp/tools"
-    }
-  }
-}

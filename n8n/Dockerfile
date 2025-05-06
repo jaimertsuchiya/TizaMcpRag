@@ -22,11 +22,10 @@ RUN npm init -y && \
     mkdir -p node_modules
 
 # Copia os arquivos do wrapper MCP
-COPY wrapper_mcp/dist/mcp_wrapper /usr/local/bin/mcp-client/mcp_wrapper
-COPY wrapper_mcp/mcp_wrapper.py /usr/local/bin/mcp-client/mcp_wrapper.py
+COPY ./wrapper_mcp/mcp_wrapper.py /usr/local/bin/mcp-client/mcp_wrapper.py
 
 # Configura permissões do wrapper MCP
-RUN chmod +x /usr/local/bin/mcp-client/mcp_wrapper && \
+RUN chmod +x /usr/local/bin/mcp-client/mcp_wrapper.py && \
     chown -R node:node /usr/local/bin/mcp-client && \
     chown -R node:node /tmp/mcp-client-logs && \
     chmod 755 /usr/local/bin/mcp-client && \
